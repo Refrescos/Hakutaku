@@ -1,18 +1,20 @@
 'use client';
 
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
-import MessageComponent from '../../../../components/MessageComponent';
-import MessageList from '../../../../components/MessageList';
-import SearchBar from '../../../../components/SearchBar';
-
+import MessageComponent from '@/components/MessageComponent';
+import MessageList from '@/components/MessageList';
+import SearchBar from '@/components/SearchBar';
 interface ChatMessage {
   user: string;
   bot: string;
   datetime: string;
+  loading: boolean;
+  isNewMessage?: boolean;
 }
 
 interface Intent {
-  id: string; // Identificador da intenção
+  id: string;
+  text: string;
 }
 
 export default function ChatPage({ params }: { params: { id: string } }) {
@@ -21,134 +23,134 @@ export default function ChatPage({ params }: { params: { id: string } }) {
   const [intents, setIntents] = useState<Intent[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatId = params.id;
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Função para buscar a conversa com base no ID
+  useEffect(() => {
+    fetchIntents();
+    fetchConversation();
+  }, [chatId]);
+
   const fetchConversation = async () => {
+    if (chatId === 'new') {
+      setMessages([]);
+      return;
+    }
+
     try {
-      const response = await fetch(`http://localhost:3000/api/conversations/${chatId}`);
-      if (!response.ok) {
-        throw new Error('Erro ao buscar mensagens');
-      }
+      const response = await fetch(`/api/conversations/${chatId}`);
+      if (!response.ok) throw new Error('Failed to fetch messages');
+
       const data = await response.json();
-      const chatMessages = data.chat.map((chat: { user: string; bot: string; datetime: string }) => ({
+      const chatMessages = data.chat.chatEntries.map((chat: ChatMessage) => ({
         user: chat.user,
         bot: chat.bot,
         datetime: chat.datetime,
       }));
-      setMessages(chatMessages); // Armazena as mensagens da conversa
+
+      setMessages(chatMessages);
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Error fetching conversation:', error);
     }
   };
 
-  // Função para buscar a lista de intenções
   const fetchIntents = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/conversations');
-      if (!response.ok) {
-        throw new Error('Erro ao buscar intenções');
-      }
+      const response = await fetch('/api/conversations');
+      if (!response.ok) throw new Error('Failed to fetch intents');
+
       const data = await response.json();
-      const intentsArray = data.intents.map((id: string) => ({ id }));
-      setIntents(intentsArray); // Armazena as intenções na barra lateral
+      const intentsArray = data.intents.map((intent: { sessionId: string; sessionName: string }) => ({
+        id: intent.sessionId,
+        text: intent.sessionName.replaceAll('"', ''),
+      }));
+
+      setIntents(intentsArray);
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Error fetching intents:', error);
     }
   };
 
-  const [loading, setLoading] = useState<boolean>(false);
-
-  // Atualize a função sendMessage
   const sendMessage = async (query: string) => {
     const userMessage: ChatMessage = {
       user: query,
-      bot: '', // Inicialmente, a mensagem do bot é vazia
+      bot: '',
       datetime: new Date().toISOString(),
+      loading: true, // Set loading to true
     };
-  
-    // Adiciona a mensagem do usuário ao estado
-    setMessages((prevMessages) => {
-      const updatedMessages = [...prevMessages, userMessage];
-      console.log('Mensagens após envio do usuário:', updatedMessages); // Debugging
-      return updatedMessages;
-    });
-  
-    setLoading(true); // Começa o loading
-  
+
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+    setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/conversations/${chatId}`, {
+      const url = chatId === 'new' ? '/api/conversations/' : `/api/conversations/${chatId}`;
+      const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
       });
-  
-      if (!response.ok) {
-        throw new Error('Erro ao enviar a mensagem');
-      }
-  
+
+      if (!response.ok) throw new Error('Failed to send message');
+
       const data = await response.json();
-      const botMessage: ChatMessage = {
-        user: '', // Mensagem do usuário não é necessária aqui
-        bot: data.result, // Mensagem do bot recebida da API
-        datetime: new Date().toISOString(),
-      };
-  
-      // Atualiza a mensagem do bot na mesma posição da mensagem do usuário
+      const botMessage = data.result;
+
+      // Simulate streaming of message
+      for (let i = 1; i <= botMessage.length; i++) {
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          updatedMessages[updatedMessages.length - 1].bot = botMessage.slice(0, i);
+          return updatedMessages;
+        });
+        await new Promise((resolve) => setTimeout(resolve, 50)); // Adjust delay as needed
+      }
+
+      // After streaming, set loading to false
       setMessages((prevMessages) => {
         const updatedMessages = [...prevMessages];
-        updatedMessages[updatedMessages.length - 1] = {
-          ...updatedMessages[updatedMessages.length - 1], // Mantém a mensagem do usuário
-          bot: botMessage.bot, // Atualiza a mensagem do bot
-        };
-        console.log('Mensagens após resposta do bot:', updatedMessages); // Debugging
+        updatedMessages[updatedMessages.length - 1].loading = false;
         return updatedMessages;
       });
+
+      if (chatId === 'new') {
+        const newURL = `/Chat/${data.sessionId}`;
+        window.history.pushState({}, '', newURL);
+        fetchIntents();
+      }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Error sending message:', error);
     } finally {
-      setLoading(false); // Para o loading
+      setLoading(false);
     }
   };
-  
-  useEffect(() => {
-    fetchIntents(); // Busca a lista de intenções ao montar o componente
-    fetchConversation(); // Busca a conversa ao montar o componente
-  }, [chatId]);
+
 
   const handleSearch = () => {
-    if (searchTerm.trim() === '') return;
-    sendMessage(searchTerm); // Envia a nova pergunta
-    setSearchTerm(''); // Limpa o campo de pesquisa
-  };
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (searchTerm.trim()) {
+      sendMessage(searchTerm);
+      setSearchTerm('');
     }
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+
+  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+  useEffect(() => scrollToBottom(), [messages]);
 
   return (
     <section className="flex flex-col h-full bg-[#EDE9E2]">
       <div className="flex flex-row gap-4 py-8 md:py-0 flex-1">
         <MessageList chats={intents} />
-        <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="flex-1 flex flex-col justify-between">
           <div className="flex-1 w-full overflow-y-auto px-40" style={{ maxHeight: '500px' }}>
             {messages.map((msg, index) => (
-              <MessageComponent key={index} message={{ question: msg.user, response: msg.bot }} />
+              <MessageComponent key={index} message={{ question: msg.user, response: msg.bot}} />
             ))}
             <div ref={messagesEndRef} />
           </div>
-          <SearchBar searchTerm={searchTerm} onChange={handleInputChange} onSearch={handleSearch} />
+          <div className="w-full flex justify-center p-4">
+            <SearchBar searchTerm={searchTerm} onChange={handleInputChange} onSearch={handleSearch} />
+          </div>
         </div>
       </div>
     </section>
