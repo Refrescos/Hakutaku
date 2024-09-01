@@ -8,6 +8,9 @@
 </p>
 
 ## Equipe: Refrescos 🥤🥝
+
+Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk2stOKLL1KByeFm-IKdA/edit?utm_content=DAGPfm-homw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton/)
+
 ### Integrantes: 
 
 <div align="center">
