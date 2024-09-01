@@ -39,7 +39,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Hakutaku é um assistente inteligente que usa IA para fornecer insights e otimizar o uso de informações no StarkBank, ajudando clientes e colaboradores a economizar tempo com um chatbot que resolve dúvidas sobre APIs e facilita o acesso a dados.
 
-### 1.1 Missão:
+### 2.1 Missão:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transformar a informação da empresa em ações que impulsionem o sucesso de clientes e colaboradores, promovendo inovação e transparência
 
