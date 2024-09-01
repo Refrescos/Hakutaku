@@ -11,7 +11,7 @@
 
 Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk2stOKLL1KByeFm-IKdA/edit?utm_content=DAGPfm-homw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton/)
 
-### Integrantes: 
+### Integrantes:
 
 <div align="center">
   <table>
@@ -26,7 +26,7 @@ Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk
 </div>
 
 ## Sumário
-[1. Extrutura de Pastas](#c1)
+[1. Extrutura de Pastas](#1-extrutura-de-pastas)
 
 [2. Descrição](#c2)
 
@@ -36,9 +36,9 @@ Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk
 
 [5. Análise de dados](#c5)
 
-## <a name="c1"></a>1. Extrutura de Pastas
+## 1. Extrutura de Pastas
 
-## <a name="c2"></a>2. Descrição da Hakutaku
+## 2. Descrição da Hakutaku
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Hakutaku é um assistente inteligente que usa IA para fornecer insights e otimizar o uso de informações no StarkBank, ajudando clientes e colaboradores a economizar tempo com um chatbot que resolve dúvidas sobre APIs e facilita o acesso a dados.
 
@@ -46,7 +46,7 @@ Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transformar a informação da empresa em ações que impulsionem o sucesso de clientes e colaboradores, promovendo inovação e transparência
 
-## <a name="c3"></a> 3. Personas
+## 3. Personas
 
 ### 3.1 Colaborador do StarkBank:
 
@@ -84,7 +84,7 @@ Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk
 - Documentações longas que entregam informações pontuais para ela
 - Dúvidas personalizadas em relação à integração da VTEX com o StarkBank, que podem ser sanadas com os desenvolvedores da Stark, mas leva tempo
 
-## <a name="c4"></a>4. Análise da empresa
+## 4. Análise da empresa
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Hakutaku é uma solução SaaS (Software as a Service) voltada para o mercado B2B, atendendo especialmente instituições financeiras, empresas de tecnologia e organizações que oferecem infraestrutura tecnológica de alta complexidade. Nossa proposta é ajudar empresas que lidam com grandes volumes de dados e necessitam de rapidez e precisão no suporte ao cliente, transformando o atendimento e o acesso a informações em uma vantagem competitiva, gerando insights visando a rampagem de clientes e melhoria de produtos para seus clientes.
 
@@ -92,9 +92,40 @@ Apresentação: [Link para o Canva](https://www.canva.com/design/DAGPfm-homw/2dk
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Os dados qualitativos e as dores (dados) coletadas pelo chatbot, que são baseados em histórico, quando associados é possível identificar padrões e tendências que podem ser usados para aprimorar a experiência do cliente e oferecer mais serviços, já que boa parte da informação da potencialidade dos clientes não são tão profundos atualmente na StarkBank, mas são de grande valor pois podem afetar positivamente a rampagem dos clientes.
 
-## <a name="c5"></a>5. Análise de Dados
+## 5. Desenvolvimento
+Descrição do desenvolvimento da solução.
+### 5.1 Análise de Dados
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilizando os dados fornecidos pela equipe da Stark Bank, o arquivo corporate_purchase.csv foi analisado para identificar características relevantes dos clientes. Foram examinados padrões de compra, como o número de transações, valores, categorias dos produtos e datas, com o objetivo de fornecer essas informações como input para o chatbot. Inicialmente, o software Looker Studio foi empregado para explorar os dados por meio de gráficos e análises estatísticas. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilizando os dados fornecidos pela equipe da Stark Bank, o arquivo corporate_purchase.csv foi analisado para identificar características relevantes dos clientes. Foram examinados padrões de compra, como o número de transações, valores, categorias dos produtos e datas, com o objetivo de fornecer essas informações como input para o chatbot. Inicialmente, o software Looker Studio foi empregado para explorar os dados por meio de gráficos e análises estatísticas.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Em seguida, os dados foram processados no Jupyter Notebook, onde, com o uso da biblioteca Pandas em Python, foram extraídas informações detalhadas de nove dimensões distintas, como o total de transações por categoria, transações por status e status por tipo de produto, entre outros. Após essa extração, as informações foram preparadas e incorporadas como input ao modelo.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;É possivel encontrar os arquivos relativos na pasta [sources/notebook](./sources/notebook/).
+
+### 5.2 Modelo de Chatbot
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilizamos do serviço de Agent Builder da Vertex AI para criar o sistema de chatbot, junto ao RAG e Embeddings do nossa datalake. O chatbot foi treinado com base nas perguntas mais frequentes dos clientes e colaboradores que geramos em uma mockup, e ele entende muito bem as perguntas e responde com precisão com base nos dados fornecidos pela Stark Bank ( Atualmente foi adicionado informaçoes sobre o uso da API e sobre os produtos da Stark Bank).
+
+![Vertex](./assets/vertex.png)
+
+### 5.3 Dashboard e API
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Para criação da nossa dashboard e API (Integrada) foi utilizado da framework NextJS, que é uma framework de ReactJS, e do serviço de API Gateway da Google Cloud. A dashboard foi criada para que os colaboradores da Stark Bank possam ter acesso a informações sobre os clientes e sobre o uso da API, e a API foi criada para que os clientes da Stark Bank possam ter acesso a informações sobre os produtos da Stark Bank.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Os código relativo a dashboard e API podem ser encontrados na pasta [sources/dashboard](./sources/dashboard/).
+
+Componentes principais da nossa solução:
+- [Rotas da API](./sources/dashboard/app/api)
+- [Página de Chat](./sources/dashboard/app/(layout))
+- [Página de Report](./sources/dashboard/app/(raw))
+- [Serviços da Google, OpenAPI e Fake testes gerados](./sources/dashboard/services)
+
+
+Arquitetura de fluxo:
+- Temos a entrada de dados do cliente e colaborador, que são processados pelo chatbot e pela API, e retornam informações para o cliente e colaborador como resposta e armazenamento os chats e dados dos clientes.
+- Os Logs de requisições da API da Stark Bank são coletados e armazenados(no caso mockados com os dados enviados no Drive).
+- O modelo da OpenAI gera relatórios e insights com base nos dados coletados, usando o histórico de conversas e dados dos clientes, e as requisições da API da Stark Bank, que foram devidamente tratadas e armazenadas com filtros fornecidos em [5.1 Análise de Dados](#5-1-analise-de-dados).
+- Os resultados são exibidos na dashboard, que é acessada pelos colaboradores da Stark Bank, e na API, que é acessada pelos clientes da Stark Bank.
+
+![Arquitetura](./assets/arquitetura.png)
 
