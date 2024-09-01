@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 export async function POST(request: Request, { params }: { params: { id: string } }) {
 	try {
 		const { query } = await request.json();
-		const { result, sessionId } = await GoogleService.detectIntent(query);
+		const { result } = await GoogleService.detectIntent(query, params.id);
 
 		return NextResponse.json({
 			result,

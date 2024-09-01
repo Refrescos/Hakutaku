@@ -1,7 +1,8 @@
 import { SessionsClient } from '@google-cloud/dialogflow-cx';
 import { v4 as uuidv4 } from 'uuid';
+import { VertexAI, HarmBlockThreshold, HarmCategory, GenerativeModel } from '@google-cloud/vertexai';
 
-interface ChatEntry {
+export interface ChatEntry {
 	bot: string;
 	user: string;
 	datetime: string;
@@ -9,6 +10,7 @@ interface ChatEntry {
 
 class GoogleService {
 	private client: SessionsClient;
+	private vertexClient: VertexAI;
 	private projectId: string;
 	private location: string;
 	private agentId: string;
@@ -23,6 +25,11 @@ class GoogleService {
 			apiEndpoint: 'us-central1-dialogflow.googleapis.com',
 		});
 
+		this.vertexClient = new VertexAI({
+			project: process.env.GCP_PROJECT_ID,
+			location: 'us-central1',
+		});
+
 		this.projectId = process.env.GCP_PROJECT_ID;
 		this.location = 'us-central1';
 		this.agentId = process.env.GCP_AGENT_ID;
@@ -30,6 +37,9 @@ class GoogleService {
 	}
 
 	async detectIntent(query: string, id: string | null = null): Promise<any> {
+		if (id && !this.sessionStore.has(id)) {
+			throw new Error('Session not found');
+		}
 		const sessionId = id || uuidv4();
 		const sessionPath = this.client.projectLocationAgentSessionPath(this.projectId, this.location, this.agentId, sessionId);
 
@@ -105,6 +115,28 @@ class GoogleService {
 
 		for (const message of messageBuffer) {
 			yield message;
+		}
+	}
+
+	async getGeminiOutput(input: string, promp: string, text_model = 'gemini-1.0-pro'): Promise<string> {
+		try {
+			const request = {
+				contents: [{ role: 'user', parts: [{ text: input }] }],
+			};
+			const model = this.vertexClient.getGenerativeModel({
+				model: text_model,
+				safetySettings: [{ category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE }],
+				generationConfig: { maxOutputTokens: 2056 },
+				systemInstruction: {
+					role: 'system',
+					parts: [{ text: promp }],
+				},
+			});
+			const streamingResult = await model.generateContentStream(request);
+			const response = (await streamingResult.response)?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+			return response;
+		} catch (error) {
+			throw new Error(`Failed to get Gemini output: ${error}`);
 		}
 	}
 
