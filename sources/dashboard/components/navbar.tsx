@@ -2,6 +2,8 @@
 
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import icon1 from "../public/icon1.png";
+import { FaPlusCircle } from "react-icons/fa";
+
 import Image from "next/image";
 export function Component() {
   return (
@@ -12,9 +14,9 @@ export function Component() {
       </Navbar.Brand>
       <div className="flex md:order-2 items-center gap-20">
         <Navbar.Collapse >
-				  <Navbar.Link href="#" className="flex flex-row gap-2">API <Image src="/info.png" alt="avatar" width={20} height={20}></Image></Navbar.Link>
+				  <Navbar.Link href="https://starkbank.movidesk.com/kb/pt-br" className="flex flex-row gap-2">Help <Image src="/info.png" alt="avatar" width={20} height={20}></Image></Navbar.Link>
 				  
-				  <Navbar.Link href="#" className="flex flex-row gap-2">API Documentation <Image src="/docs.png" alt="avatar" width={20} height={20}></Image></Navbar.Link>
+				  <Navbar.Link href="https://starkbank.com/docs/api" className="flex flex-row gap-2">API Documentation <Image src="/docs.png" alt="avatar" width={20} height={20}></Image></Navbar.Link>
         </Navbar.Collapse>
         <Dropdown
           arrowIcon={false}
@@ -22,12 +24,12 @@ export function Component() {
           label={<Avatar alt="User settings" img="/people.png" rounded />}
         >
           <Dropdown.Header>
-            <span className="block text-sm">Bonnie Green</span>
-            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
+            <span className="block text-sm">Guest</span>
+            {/* <span className="block truncate text-sm font-medium">user@flowbite.com</span> */}
           </Dropdown.Header>
-          <Dropdown.Item>Dashboard</Dropdown.Item>
+          {/* <Dropdown.Item>Dashboard</Dropdown.Item>
           <Dropdown.Item>Settings</Dropdown.Item>
-          <Dropdown.Item>Earnings</Dropdown.Item>
+          <Dropdown.Item>Earnings</Dropdown.Item> */}
           <Dropdown.Divider />
           <Dropdown.Item>Sign out</Dropdown.Item>
         </Dropdown>
