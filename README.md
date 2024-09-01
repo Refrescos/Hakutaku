@@ -45,7 +45,7 @@
 
 ## <a name="c3"></a> 3. Personas
 
-### 2.1 Colaborador do StarkBank:
+### 3.1 Colaborador do StarkBank:
 
 **Nome**: Lucas Almeida
 
@@ -64,7 +64,7 @@
 - Pressão para manter altos níveis de satisfação do cliente em um ambiente dinâmico e com alta demanda
 - Desafios para integrar insights de diferentes fontes de dados, criando uma visão coesa das necessidades dos clientes
 
-### 2.2 Dev de empresa cliente
+### 3.2 Dev de empresa cliente
 
 **Nome**: Mariana Costa
 
@@ -89,7 +89,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Os dados qualitativos e as dores (dados) coletadas pelo chatbot, que são baseados em histórico, quando associados é possível identificar padrões e tendências que podem ser usados para aprimorar a experiência do cliente e oferecer mais serviços, já que boa parte da informação da potencialidade dos clientes não são tão profundos atualmente na StarkBank, mas são de grande valor pois podem afetar positivamente a rampagem dos clientes.
 
-## <a name="c5"></a>4. Análise de Dados
+## <a name="c5"></a>5. Análise de Dados
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilizando os dados fornecidos pela equipe da Stark Bank, o arquivo corporate_purchase.csv foi analisado para identificar características relevantes dos clientes. Foram examinados padrões de compra, como o número de transações, valores, categorias dos produtos e datas, com o objetivo de fornecer essas informações como input para o chatbot. Inicialmente, o software Looker Studio foi empregado para explorar os dados por meio de gráficos e análises estatísticas. 
 
