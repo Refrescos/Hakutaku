@@ -1,0 +1,45 @@
+99 TAXI 
+Transação mínima: -5003 R$
+Transação máxima: 15300 R$
+Transação média: 3695.42 R$
+Total de transações: 4849 
+Transação de valor zero, positivo e negativo: 
+Positiva:60.8% 
+Zero:39.1% 
+Negativa:0.1% 
+Proporção por Status: 
+confirmed:59.1 %
+canceled:37.5 %
+denied:1.9 %
+voided:1.5 %
+approved:0.0 %
+Tipo de Produto da Transação, Status: 
+('airlines', 'confirmed'):77.8%
+('airlines', 'canceled'):22.2%
+('carRental', 'confirmed'):58.9%
+('carRental', 'canceled'):37.6%
+('carRental', 'denied'):1.9%
+('carRental', 'voided'):1.5%
+('carRental', 'approved'):0.0%
+('financial', 'confirmed'):100.0%
+('food', 'canceled'):100.0%
+('hotels', 'confirmed'):87.5%
+('hotels', 'canceled'):12.5%
+('organizations', 'confirmed'):100.0%
+('retail', 'canceled'):50.0%
+('retail', 'confirmed'):50.0%
+('services', 'confirmed'):66.7%
+('services', 'canceled'):33.3%
+Total das transações por status:approved: 1000 R$
+canceled: 0 R$
+confirmed: 17493896 R$
+denied: 424200 R$
+voided: 0 R$
+Total das Transações por categoria:airlines: 14000 R$
+carRental: 17901337 R$
+financial: 2000 R$
+food: 0 R$
+hotels: 13000 R$
+organizations: 2000 R$
+retail: 4000 R$
+services: 3000 R$
