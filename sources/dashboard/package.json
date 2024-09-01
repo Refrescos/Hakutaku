@@ -30,7 +30,7 @@
 		"@react-aria/visually-hidden": "3.8.15",
 		"@rsuite/charts": "^5.2.3",
 		"axios": "^1.7.7",
-		"chart.js": "^2.9.3",
+		"chart.js": "^4.4.4",
 		"clsx": "2.1.1",
 		"flowbite-react": "^0.10.1",
 		"framer-motion": "11.3.31",
