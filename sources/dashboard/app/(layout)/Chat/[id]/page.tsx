@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
-import MessageComponent, {Message} from '@/components/MessageComponent';
+import MessageComponent from '@/components/MessageComponent';
 import MessageList from '@/components/MessageList';
 import SearchBar from '@/components/SearchBar';
 interface ChatMessage {
@@ -144,7 +144,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
         <div className="flex-1 flex flex-col justify-between">
           <div className="flex-1 w-full overflow-y-auto px-40" style={{ maxHeight: '500px' }}>
             {messages.map((msg, index) => (
-              <MessageComponent key={index} message={{ question: msg.user, response: msg.bot, loading: msg.loading}} />
+              <MessageComponent key={index} message={{ question: msg.user, response: msg.bot}} />
             ))}
             <div ref={messagesEndRef} />
           </div>
