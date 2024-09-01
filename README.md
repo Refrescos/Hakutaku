@@ -13,7 +13,7 @@
 <div align="center">
   <table>
     <tr>
-      <td align="center"><a href="https://www.linkedin.com/in/davi-abreu-da-silveira/"><img style="border-radius: 10%;" src="./assets/Davi.jpg" width="100px;" alt="Davi" /><br><sub><b>Davi Abreu</b></sub></a></td>
+      <td align="center"><a href="https://www.linkedin.com/in/davi-abreu-da-silveira/"><img style="border-radius: 10%;" src="./assets/davi.jpg" width="100px;" alt="Davi" /><br><sub><b>Davi Abreu</b></sub></a></td>
       <td align="center"><a href="https://www.linkedin.com/in/gabriela-fichtner/"><img style="border-radius: 10%;" src="./assets/gabriela.jpeg" width="100px;" alt="Gabriela"/><br><sub><b> Gabriela Fichtner</b></sub></a></td>
       <td align="center"><a href="https://www.linkedin.com/in/raduanmuarrek/"><img style="border-radius: 10%;" src="./assets/raduan.jpeg" width="100px;" alt="Raduan"/><br><sub><b>Raduan Muarrek</b></sub></a></td>
       <td align="center"><a href="https://www.linkedin.com/in/vinicioslugli/"><img style="border-radius: 10%;" src="./assets/lugli.jpg" width="100px;" alt="Vinicios"/><br><sub><b>Vinicios Lugli</b></sub></a></td>
@@ -29,7 +29,9 @@
 
 [3. Personas](#c3)
 
-[4. Análise da empresa](#c3)
+[4. Análise da empresa](#c4)
+
+[5. Análise de dados](#c5)
 
 ## <a name="c1"></a>1. Extrutura de Pastas
 
@@ -86,3 +88,10 @@
 **Diferencial:**
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Os dados qualitativos e as dores (dados) coletadas pelo chatbot, que são baseados em histórico, quando associados é possível identificar padrões e tendências que podem ser usados para aprimorar a experiência do cliente e oferecer mais serviços, já que boa parte da informação da potencialidade dos clientes não são tão profundos atualmente na StarkBank, mas são de grande valor pois podem afetar positivamente a rampagem dos clientes.
+
+## <a name="c5"></a>4. Análise de Dados
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Utilizando os dados fornecidos pela equipe da Stark Bank, o arquivo corporate_purchase.csv foi analisado para identificar características relevantes dos clientes. Foram examinados padrões de compra, como o número de transações, valores, categorias dos produtos e datas, com o objetivo de fornecer essas informações como input para o chatbot. Inicialmente, o software Looker Studio foi empregado para explorar os dados por meio de gráficos e análises estatísticas. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Em seguida, os dados foram processados no Jupyter Notebook, onde, com o uso da biblioteca Pandas em Python, foram extraídas informações detalhadas de nove dimensões distintas, como o total de transações por categoria, transações por status e status por tipo de produto, entre outros. Após essa extração, as informações foram preparadas e incorporadas como input ao modelo.
+
