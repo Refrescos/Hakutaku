@@ -15,9 +15,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
 export async function POST(request: Request, { params }: { params: { id: string } }) {
 	try {
 		const { query } = await request.json();
-		const chat = await GoogleService.detectIntent(query, params.id);
+		const { result, sessionId } = await GoogleService.detectIntent(query);
 
-		return NextResponse.json({ chat });
+		return NextResponse.json({
+			result,
+		});
 	} catch (error) {
 		console.error(error);
 		return NextResponse.json({ message: 'Failed to send message' }, { status: 500 });
