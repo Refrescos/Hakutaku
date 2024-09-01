@@ -16,11 +16,12 @@ export async function POST(request: Request) {
 	try {
 		const { query } = await request.json();
 
-		const { result, sessionId } = await GoogleService.detectIntent(query);
+		const { result, sessionId, sessionName } = await GoogleService.detectIntent(query);
 
 		return NextResponse.json({
 			result,
 			sessionId,
+			sessionName,
 		});
 	} catch (error) {
 		console.error(error);

@@ -1,4 +1,5 @@
-import GoogleService, { ChatEntry } from './google';
+import { ChatEntry } from './google';
+import OpenAIService from './openai';
 
 export interface InsightInput {
 	insight: string;
@@ -14,6 +15,7 @@ enum Priority {
 }
 
 export interface InsightOutput {
+	name: string;
 	insight: string;
 	percentage: number;
 	priority: Priority;
@@ -65,138 +67,43 @@ export interface TransactionData {
 	};
 }
 
-export const EXAMPLE_TRANSACTION_DATA: TransactionData = {
-	minTransaction: -5003,
-	maxTransaction: 15300,
-	averageTransaction: 3695.42,
-	totalTransactions: 4849,
-	valuePercentage: {
-		positive: 60.8,
-		zero: 39.1,
-		negative: 0.1,
-	},
-	statusPercentage: {
-		confirmed: 59.1,
-		canceled: 37.5,
-		denied: 1.9,
-		voided: 1.5,
-		approved: 0.0,
-	},
-	transactionTypeStatusPercentage: {
-		airlines: {
-			confirmed: 77.8,
-			canceled: 22.2,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-		carRental: {
-			confirmed: 58.9,
-			canceled: 37.6,
-			denied: 1.9,
-			voided: 1.5,
-			approved: 0.0,
-		},
-		financial: {
-			confirmed: 100.0,
-			canceled: 0,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-		food: {
-			canceled: 100.0,
-			confirmed: 0,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-		hotels: {
-			confirmed: 87.5,
-			canceled: 12.5,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-		organizations: {
-			confirmed: 100.0,
-			canceled: 0,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-		retail: {
-			canceled: 50.0,
-			confirmed: 50.0,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-		services: {
-			confirmed: 66.7,
-			canceled: 33.3,
-			denied: 0,
-			voided: 0,
-			approved: 0,
-		},
-	},
-	totalByStatus: {
-		approved: 1000,
-		canceled: 0,
-		confirmed: 17493896,
-		denied: 424200,
-		voided: 0,
-	},
-	totalByCategory: {
-		airlines: 14000,
-		carRental: 17901337,
-		financial: 2000,
-		food: 0,
-		hotels: 13000,
-		organizations: 2000,
-		retail: 4000,
-		services: 3000,
-	},
-};
+export interface DashboardData {
+	requestsToday: number;
+	teamTimeSaved: number;
+	averageRequestsPerIssue: number;
+	averageIntegrationTime: number;
+	retentionRate: number;
+	mostSearchedSections: { section: string; count: number }[];
+	problemResolutionByProduct: { product: string; requests: number; resolutionRate: number }[];
+}
 
-export const EXAMPLE_CHAT_ENTRIES: ChatEntry[] = [
-	{
-		bot: 'Welcome to StarkBank! How can I assist you today?',
-		user: 'I need help integrating the payment API.',
-		datetime: '2024-09-01T10:00:00Z',
-	},
-	{
-		bot: 'Sure! Do you need documentation or a step-by-step guide?',
-		user: 'A step-by-step guide would be great.',
-		datetime: '2024-09-01T10:02:00Z',
-	},
-	{
-		bot: 'Heres a guide on integrating the payment API: [link]. Let me know if you need further assistance.',
-		user: 'Thanks, this is very helpful!',
-		datetime: '2024-09-01T10:05:00Z',
-	},
-	{
-		bot: 'Youre welcome! If you have any more questions, feel free to ask.',
-		user: 'Actually, could you explain how to handle webhook events?',
-		datetime: '2024-09-01T10:07:00Z',
-	},
-	{
-		bot: 'Certainly! Webhook events allow you to receive real-time notifications about transactions. Heres how to set it up: [link].',
-		user: 'Got it! Thanks again.',
-		datetime: '2024-09-01T10:10:00Z',
-	},
-];
 class Report {
 	private chatEntries: ChatEntry[];
 	private transactionData: TransactionData;
-	PROMPT = `Based on your transactions and chat history, here are some insights(new services, features, etc.) that could be beneficial to your business, give me the percentage of how much you agree with each one and why, example of output:
-	credit_card: 71% "You should implement a new feature that allows users to track their transactions in real-time.".
-	transaction_monitor: 92% "You should implement a new feature that allows users to track their transactions in real-time.
-	Now you can add your insights based on the analysis:`;
+	private dashboardData: DashboardData;
 
-	constructor(chatEntries: ChatEntry[], transactionData: TransactionData) {
+	PROMPT = `You are an AI assistant for StarkBank. Your task is to analyze the provided transaction data and chat history to generate specific, actionable business insights for the user. These insights should include new services, features, or other recommendations that could benefit StarkBank clients. You should also create a unique name for each insight using the format "<insight_name>(<description>)" and assign a priority level based on its importance, considering both the weight of the insight and your AI intuition.
+
+	Format the output as:
+	<insight_name>(<description>): <percentage>% "<detailed description>"
+	Where:
+	- <insight_name> is the name of the insight.
+	- <description> is a brief description of the insight.
+	- <percentage> is how much you agree with the insight.
+	- <detailed description> is a brief explanation of the insight.
+
+	Example:
+	credit_card(Offer credit card service): 85% "Implement a real-time transaction tracking feature for credit card users."
+	transaction_monitor(Enhance transaction monitoring): 92% "Enhance transaction monitoring with AI-based fraud detection."
+
+	Write raw text insights line by line, without any additional formatting.
+	Feel free to create new insights based on the context and history provided, and prioritize them intelligently.
+	`;
+
+	constructor(chatEntries: ChatEntry[], transactionData: TransactionData, dashboardData: DashboardData) {
 		this.chatEntries = chatEntries;
 		this.transactionData = transactionData;
+		this.dashboardData = dashboardData;
 	}
 
 	private formatTransactionData(): string {
@@ -229,64 +136,78 @@ class Report {
 			.join('\n');
 	}
 
-	calculatePriority(percentage: number, weight: number): Priority {
-		const priority = percentage * weight;
+	private calculateAIIntuition(insight: { name: string; percentage: number }): number {
+		return Math.random() * 0.3 + 0.7;
+	}
 
-		if (priority < 30) {
+	private calculatePriority(percentage: number, weight: number, aiIntuition: number): Priority {
+		const priorityScore = percentage * weight * aiIntuition;
+
+		if (priorityScore < 50) {
 			return Priority.LOW;
-		} else if (priority < 60) {
+		} else if (priorityScore < 75) {
 			return Priority.MEDIUM;
-		} else if (priority < 90) {
+		} else if (priorityScore < 90) {
 			return Priority.HIGH;
 		} else {
 			return Priority.REQUIRED;
 		}
 	}
 
-	async build(possibleInsights: InsightInput[]): Promise<InsightOutput[]> {
+	async build(possibleInsights: InsightInput[]): Promise<{ insights: InsightOutput[]; data: DashboardData }> {
 		const transactionDataText = this.formatTransactionData();
 		const chatHistoryText = this.formatChatHistory();
 
 		const inputText = `Transaction Data:\n${transactionDataText}\n\nChat History:\n${chatHistoryText}`;
 
-		const geminiResponse = await GoogleService.getGeminiOutput(inputText, this.PROMPT);
+		const response = await OpenAIService.getOutput(inputText, this.PROMPT);
 
-		const percentagePredictions = this.parseGeminiResponse(geminiResponse);
+		const predictions = this.parseResponse(response);
 
-		const insights: InsightOutput[] = possibleInsights.map((insight, index) => {
-			const percentage = percentagePredictions.find((prediction) => prediction.name === insight.insight)?.percentage || 0;
-			const priority = this.calculatePriority(percentage, insight.weight);
+		const insights: InsightOutput[] = predictions.map((insight, index) => {
+			const [percentage, description] = [insight.percentage, insight.description];
+			const matchingInsight = possibleInsights.find((i) => i.insight === insight.name);
+			const weight = matchingInsight ? matchingInsight.weight : 1;
+			const aiIntuition = this.calculateAIIntuition(insight);
+			const priority = this.calculatePriority(percentage, weight, aiIntuition);
 
 			return {
-				insight: insight.insight,
+				name: insight.name_short,
+				insight: insight.name,
 				percentage,
-				priority,
-				description: insight.context,
+				priority: Priority[priority] as unknown as Priority,
+				description,
 			};
 		});
 
-		return insights;
+		return {
+			insights,
+			data: this.dashboardData,
+		};
 	}
+	private parseResponse(response: string) {
+		console.log(response);
 
-	private parseGeminiResponse(geminiResponse: string) {
-		const lines = geminiResponse.split('\n');
-		const percentagePredictions: number[] = [];
+		const lines = response.split('\n');
 		let insightList = [];
 		for (const line of lines) {
+			if (!line) {
+				continue;
+			}
 			let insight = {
 				name: '',
+				name_short: '',
 				percentage: 0,
 				description: '',
 			};
 
-			const matches = line.match(/(.*): (\d+)% "(.*)"/);
+			const matches = line.match(/(.*)\((.*)\): (\d+)% "(.*)"/);
 
 			if (matches) {
-				insight.name = matches[1];
-				insight.percentage = Number(matches[2]);
-				insight.description = matches[3];
-
-				percentagePredictions.push(insight.percentage);
+				insight.name = matches[1].trim();
+				insight.name_short = matches[2].trim();
+				insight.percentage = Number(matches[3].trim());
+				insight.description = matches[4].trim();
 			} else {
 				console.error(`Failed to parse insight: ${line}`);
 			}
