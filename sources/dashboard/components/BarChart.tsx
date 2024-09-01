@@ -12,7 +12,7 @@ interface BarChartProps {
     barThickness?: number; // Nova prop para a largura das barras
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, labels, barColor = 'rgba(75, 192, 192, 0.6)', barThickness = 15 }) => {
+const BarChart: React.FC<BarChartProps> = ({ data, labels, barColor = 'bg-orange-500', barThickness = 15 }) => {
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     
     useEffect(() => {
@@ -24,7 +24,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, labels, barColor = 'rgba(75, 
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'My Dataset',
+                            label: 'Maiores dores do usuario',
                             data: data,
                             backgroundColor: barColor,
                             barThickness: barThickness, // Largura das barras
