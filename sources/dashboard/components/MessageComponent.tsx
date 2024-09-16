@@ -25,7 +25,7 @@ const MessageComponent: React.FC<MessageProps> = ({ message }) => {
         <div className="flex-shrink-0 mr-2">
           <Image src="/boi.png" alt="Bot Icon" width={100} height={100} />
         </div>
-        <div className="flex-1 flex flex-col items-start">
+        <div className="flex-1 flex flex-col items-start py-4">
           <p className="text-xl font-semibold">{message.response}</p>
         </div>
       </div>

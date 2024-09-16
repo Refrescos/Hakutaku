@@ -29,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onChange, onSearch })
           onKeyPress={handleKeyPress}
         />
         <button
-          className="bg-orange-500 hover:bg-orange-600 text-white rounded-full p-3 mr-2 transition-all duration-200"
+          className="bg-[#F26B1D] hover:bg-orange-600 text-white rounded-full p-3 mr-2 transition-all duration-200"
           onClick={onSearch}
         >
           <Image src="/Vector.png" alt="Send" width={20} height={20} />

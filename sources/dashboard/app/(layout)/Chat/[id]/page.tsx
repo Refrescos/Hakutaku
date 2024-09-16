@@ -142,7 +142,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
       <div className="flex flex-row gap-4 py-8 md:py-0 flex-1">
         <MessageList chats={intents} />
         <div className="flex-1 flex flex-col justify-between">
-          <div className="flex-1 w-full overflow-y-auto px-40" style={{ maxHeight: '500px' }}>
+          <div className="flex-1 w-full overflow-y-auto px-40 py-10 " style={{ maxHeight: '500px' }}>
             {messages.map((msg, index) => (
               <MessageComponent key={index} message={{ question: msg.user, response: msg.bot}} />
             ))}

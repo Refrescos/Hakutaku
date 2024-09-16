@@ -17,7 +17,7 @@ const MessageList: React.FC<MessageListProps> = ({ chats }) => {
   };
 
   return (
-    <aside className="w-1/5 bg-gradient-to-b from-[#E25F2B] to-[#D24C2B] text-white px-4 h-full shadow-lg rounded-md border border-[#D24C2B]">
+    <aside className="w-1/5 bg-gradient-to-b from-[#F26B1D] to-[#D24C2B] text-white px-4 h-full shadow-lg rounded-md border border-[#D24C2B]">
       <div className="flex flex-row w-full py-4 items-center justify-between px-10">
         <h2 className="text-lg w-1/2 font-semibold">Chats history</h2>
         <button
@@ -32,7 +32,7 @@ const MessageList: React.FC<MessageListProps> = ({ chats }) => {
           <Link
             key={index}
             href={`/Chat/${chat.id}`}
-            className="rounded-lg shadow-md p-3 bg-[#F9F9F9] text-[#E25F2B] font-medium hover:bg-[#FFB585] hover:text-[#F9F9F9] transition-all duration-200 ease-in-out mb-2"
+            className="rounded-lg shadow-md p-3 bg-[#F9F9F9] text-[#F26B1D] font-medium hover:bg-[#FFB585] hover:text-[#F9F9F9] transition-all duration-200 ease-in-out mb-2"
           >
             {chat.text.length > 40 ? `${chat.text.substring(0, 40)}...` : chat.text}
           </Link>
